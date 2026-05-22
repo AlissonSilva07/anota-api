@@ -7,5 +7,6 @@ namespace Anota.Api.Services.Notes
     public interface INoteService
     {
         Task<CreateNoteResponse> CreateNoteAsync(CreateNoteRequest request);
+        Task<List<Note>> GetNotesAsync();
     }
 }

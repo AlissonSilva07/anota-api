@@ -14,15 +14,23 @@ namespace Anota.Api.Controllers
     public class NotesController(INoteService noteService) : ControllerBase
     {
         [HttpPost]
-        public async Task<ActionResult<User>> CreateNote(CreateNoteRequest request)
+        public async Task<ActionResult<CreateNoteResponse>> CreateNote(CreateNoteRequest request)
         {
-            var note = await noteService.CreateNoteAsync(request);
-            if (note is null)
+            var result = await noteService.CreateNoteAsync(request);
+            if (result is null)
             {
                 return BadRequest("Um usuário com este nome já existe.");
             }
 
-            return Ok(note);
+            return Ok(result);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<List<Note>>> GetAllNotes()
+        {
+            var result = await noteService.GetNotesAsync();
+
+            return Ok(result);
         }
     }
 }

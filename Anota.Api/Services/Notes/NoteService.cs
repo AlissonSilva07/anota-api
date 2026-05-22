@@ -32,5 +32,15 @@ namespace Anota.Api.Services.Notes
 
             return result;
         }
+
+        public async Task<List<Note>> GetNotesAsync()
+        {
+            var notes = await context.Notes
+                .AsNoTracking()
+                .OrderByDescending(n => n.CreatedAt)
+                .ToListAsync();
+
+            return notes;
+        }
     }
 }
