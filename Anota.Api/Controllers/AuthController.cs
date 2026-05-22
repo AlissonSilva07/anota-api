@@ -31,20 +31,32 @@ namespace Anota.Api.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<string>> Login(UserDto request)
+        public async Task<ActionResult<LoginResponse>> Login(UserDto request)
         {
-            var token = await authService.LoginAsync(request);
-            if (token is null)
+            var result = await authService.LoginAsync(request);
+            if (result is null)
             {
                 return BadRequest("Usuário ou senha inválidos.");
             }
 
-            return Ok(token);
+            return Ok(result);
 
         }
 
+
+        [HttpPost("refresh-token")]
+        public async Task<ActionResult<LoginResponse>> RefreshToken(RefreshTokenRequest request)
+        {
+            var result = await authService.RefreshTokenAsync(request);
+            if (result is null || result.AccessToken is null || result.RefreshToken is null)
+            {
+                return BadRequest("Token de atualização inválido.");
+            }
+            return Ok(result);
+        }
+
         [Authorize]
-        [HttpGet]
+        [HttpGet] 
         public IActionResult Authenticated()
         {
             return Ok("Você está autenticado(a)");

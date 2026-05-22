@@ -6,6 +6,7 @@ namespace Anota.Api.Services
     public interface IAuthService
     {
         Task<User?> RegisterAsync(UserDto request);
-        Task<string?> LoginAsync(UserDto request);
+        Task<LoginResponse?> LoginAsync(UserDto request);
+        Task<LoginResponse?> RefreshTokenAsync(RefreshTokenRequest request);
     }
 }

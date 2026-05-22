@@ -6,13 +6,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Anota.Api.Services
 {
     public class AuthService(AppDbContext context, IConfiguration config) : IAuthService
     {
-        public async Task<string?> LoginAsync(UserDto request)
+        public async Task<LoginResponse?> LoginAsync(UserDto request)
         {
             var user = context.Users.FirstOrDefault(user => user.Username == request.Username);
 
@@ -26,7 +27,15 @@ namespace Anota.Api.Services
                 return null;
             }
 
-            return CreateToken(user);
+            var refreshToken = await CreateRefreshTokenAsync(user);
+
+            var response = new LoginResponse
+            {
+                AccessToken = CreateToken(user),
+                RefreshToken = refreshToken
+            };
+
+            return response;
         }
 
         public async Task<User?> RegisterAsync(UserDto request)
@@ -70,6 +79,56 @@ namespace Anota.Api.Services
                 );
 
             return new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
+        }
+
+        private string CreateRefreshToken()
+        {
+            var randomNumber = new byte[32];
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(randomNumber);
+            return Convert.ToBase64String(randomNumber);
+        }
+
+        private async Task<string> CreateRefreshTokenAsync(User user)
+        {
+            var refreshToken = CreateRefreshToken();
+            user.RefreshToken = refreshToken;
+            user.RefreshTokenExpirationTime = DateTime.UtcNow.AddDays(7);
+
+            context.Users.Update(user);
+
+            await context.SaveChangesAsync();
+            return refreshToken;
+        }
+
+        private async Task<User?> ValidateRefreshTokenAsync(int userId, string refreshToken)
+        {
+            var user = await context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            if (user is null || user.RefreshToken != refreshToken || user.RefreshTokenExpirationTime <= DateTime.UtcNow)
+            {
+                return null;
+            }
+
+            return user;
+        }
+
+        public async Task<LoginResponse?> RefreshTokenAsync(RefreshTokenRequest request)
+        {
+            var user = await ValidateRefreshTokenAsync(request.UserId, request.RefreshToken);
+            if (user is null)
+            {
+                return null;
+            }
+
+            var refreshToken = await CreateRefreshTokenAsync(user);
+
+            var response = new LoginResponse
+            {
+                AccessToken = CreateToken(user),
+                RefreshToken = refreshToken
+            };
+
+            return response;
         }
     }
 }
