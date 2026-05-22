@@ -1,9 +1,7 @@
 ﻿using Anota.Api.Entities;
 using Anota.Api.Models.Notes;
-using Anota.Api.Services.Auth;
 using Anota.Api.Services.Notes;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Anota.Api.Controllers
@@ -29,6 +27,18 @@ namespace Anota.Api.Controllers
         public async Task<ActionResult<List<Note>>> GetAllNotes()
         {
             var result = await noteService.GetNotesAsync();
+
+            return Ok(result);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Note?>> GetNotesById(int id)
+        {
+            var result = await noteService.GetNoteById(id);
+            if (result is null)
+            {
+                return NotFound();
+            }
 
             return Ok(result);
         }

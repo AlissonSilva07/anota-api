@@ -42,5 +42,17 @@ namespace Anota.Api.Services.Notes
 
             return notes;
         }
+
+        public async Task<Note?> GetNoteById(int noteId)
+        {
+            var note = await context.Notes.FirstOrDefaultAsync(n => n.Id == noteId);
+
+            if (note is null)
+            {
+                return null;
+            }
+
+            return note;
+        }
     }
 }

@@ -8,5 +8,6 @@ namespace Anota.Api.Services.Notes
     {
         Task<CreateNoteResponse> CreateNoteAsync(CreateNoteRequest request);
         Task<List<Note>> GetNotesAsync();
+        Task<Note?> GetNoteById(int noteId);
     }
 }
