@@ -15,10 +15,6 @@ namespace Anota.Api.Controllers
         public async Task<ActionResult<CreateNoteResponse>> CreateNote(CreateNoteRequest request)
         {
             var result = await noteService.CreateNoteAsync(request);
-            if (result is null)
-            {
-                return BadRequest("Um usuário com este nome já existe.");
-            }
 
             return Ok(result);
         }
@@ -37,7 +33,19 @@ namespace Anota.Api.Controllers
             var result = await noteService.GetNoteById(id);
             if (result is null)
             {
-                return NotFound();
+                return NotFound($"Note with id {id} was not found.");
+            }
+
+            return Ok(result);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<Note?>> EditNote(int id, CreateNoteRequest request)
+        {
+            var result = await noteService.EditNoteAsync(id, request);
+            if (result is null)
+            {
+                return NotFound($"Note with id {id} was not found.");
             }
 
             return Ok(result);

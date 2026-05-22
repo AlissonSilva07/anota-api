@@ -7,7 +7,7 @@ namespace Anota.Api.Services.Notes
 {
     public class NoteService(AppDbContext context) : INoteService
     {
-        public async Task<CreateNoteResponse> CreateNoteAsync(CreateNoteRequest request)
+        public async Task<Note?> CreateNoteAsync(CreateNoteRequest request)
         {
             var newNote = new Note
             {
@@ -21,16 +21,7 @@ namespace Anota.Api.Services.Notes
             context.Notes.Add(newNote);
             await context.SaveChangesAsync();
 
-            var result = new CreateNoteResponse(
-                newNote.Id,
-                newNote.Title,
-                newNote.Subtitle,
-                newNote.Description,
-                newNote.Category,
-                newNote.CreatedAt
-            );
-
-            return result;
+            return newNote;
         }
 
         public async Task<List<Note>> GetNotesAsync()
@@ -53,6 +44,27 @@ namespace Anota.Api.Services.Notes
             }
 
             return note;
+        }
+
+        public async Task<Note?> EditNoteAsync(int noteId, CreateNoteRequest request)
+        {
+            var existingNote = await context.Notes
+                .FirstOrDefaultAsync(note => note.Id == noteId);
+
+            if (existingNote is null)
+            {
+                return null;
+            }
+
+            existingNote.Title = request.Title;
+            existingNote.Subtitle = request.Subtitle;
+            existingNote.Description = request.Description;
+            existingNote.Category = request.Category;
+            existingNote.UpdatedAt = DateTime.UtcNow;
+
+            await context.SaveChangesAsync();
+
+            return existingNote;
         }
     }
 }
