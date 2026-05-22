@@ -1,5 +1,4 @@
 ﻿using Anota.Api.Entities;
-using Anota.Api.Models.Auth;
 using Anota.Api.Models.Notes;
 
 namespace Anota.Api.Services.Notes

@@ -1,14 +1,8 @@
 ﻿using Anota.Api.Entities;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using System.IdentityModel.Tokens.Jwt;
-using Microsoft.AspNetCore.Authorization;
-using Anota.Api.Services.Auth;
 using Anota.Api.Models.Auth;
+using Anota.Api.Services.Auth;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Anota.Api.Controllers
 {
@@ -56,7 +50,7 @@ namespace Anota.Api.Controllers
         }
 
         [Authorize]
-        [HttpGet] 
+        [HttpGet]
         public IActionResult Authenticated()
         {
             return Ok("Você está autenticado(a)");
