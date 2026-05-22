@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.IdentityModel.Tokens.Jwt;
 using Anota.Api.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Anota.Api.Controllers
 {
@@ -40,6 +41,13 @@ namespace Anota.Api.Controllers
 
             return Ok(token);
 
+        }
+
+        [Authorize]
+        [HttpGet]
+        public IActionResult Authenticated()
+        {
+            return Ok("Você está autenticado(a)");
         }
     }
 }
