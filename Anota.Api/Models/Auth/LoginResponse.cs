@@ -1,4 +1,4 @@
-﻿namespace Anota.Api.Models
+﻿namespace Anota.Api.Models.Auth
 {
     public class LoginResponse
     {

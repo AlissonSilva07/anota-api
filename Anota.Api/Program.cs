@@ -1,5 +1,6 @@
 using Anota.Api.Data;
-using Anota.Api.Services;
+using Anota.Api.Services.Auth;
+using Anota.Api.Services.Notes;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -34,6 +35,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         });
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<INoteService, NoteService>();
 
 var app = builder.Build();
 

@@ -1,6 +1,6 @@
 ﻿using Anota.Api.Data;
 using Anota.Api.Entities;
-using Anota.Api.Models;
+using Anota.Api.Models.Auth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -9,11 +9,11 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Anota.Api.Services
+namespace Anota.Api.Services.Auth
 {
     public class AuthService(AppDbContext context, IConfiguration config) : IAuthService
     {
-        public async Task<LoginResponse?> LoginAsync(UserDto request)
+        public async Task<LoginResponse?> LoginAsync(LoginRequest request)
         {
             var user = context.Users.FirstOrDefault(user => user.Username == request.Username);
 
@@ -38,7 +38,7 @@ namespace Anota.Api.Services
             return response;
         }
 
-        public async Task<User?> RegisterAsync(UserDto request)
+        public async Task<User?> RegisterAsync(LoginRequest request)
         {
             if (await context.Users.AnyAsync(user => user.Username == request.Username))
             {

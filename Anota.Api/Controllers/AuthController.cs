@@ -1,5 +1,4 @@
 ﻿using Anota.Api.Entities;
-using Anota.Api.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -7,8 +6,9 @@ using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.IdentityModel.Tokens.Jwt;
-using Anota.Api.Services;
 using Microsoft.AspNetCore.Authorization;
+using Anota.Api.Services.Auth;
+using Anota.Api.Models.Auth;
 
 namespace Anota.Api.Controllers
 {
@@ -19,7 +19,7 @@ namespace Anota.Api.Controllers
         public static User user = new();
 
         [HttpPost("register")]
-        public async Task<ActionResult<User>> Register(UserDto request)
+        public async Task<ActionResult<User>> Register(LoginRequest request)
         {
             var user = await authService.RegisterAsync(request);
             if (user is null)
@@ -31,7 +31,7 @@ namespace Anota.Api.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<LoginResponse>> Login(UserDto request)
+        public async Task<ActionResult<LoginResponse>> Login(LoginRequest request)
         {
             var result = await authService.LoginAsync(request);
             if (result is null)
