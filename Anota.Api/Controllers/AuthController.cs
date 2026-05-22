@@ -23,5 +23,24 @@ namespace Anota.Api.Controllers
 
             return Ok(user);
         }
+
+        [HttpPost("login")]
+        public ActionResult<string> Login
+            (UserDto request)
+        {
+            if (request.Username != user.Username)
+            {
+                return BadRequest("User not found.");
+            }
+
+            if (new PasswordHasher<User>().VerifyHashedPassword(user, user.PasswordHash, request.Password) == PasswordVerificationResult.Failed)
+            {
+                return BadRequest("Wrong password.");
+            }
+
+            string token = "success";
+
+            return Ok(token);
+        }
     }
 }
